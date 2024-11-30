@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Umur</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .input-section {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kalkulator Umur</h1>
+    <div class="input-section">
+      <label for="tanggal">Masukkan Tanggal (1-31):</label>
+      <input type="number" id="tanggal" placeholder="Contoh: 9 atau 09" min="1" max="31">
+      
+      <label for="bulan">Pilih Bulan:</label>
+      <select id="bulan">
+        <option value="" selected>Pilih Bulan</option>
+        <option value="1">Januari</option>
+        <option value="2">Februari</option>
+        <option value="3">Maret</option>
+        <option value="4">April</option>
+        <option value="5">Mei</option>
+        <option value="6">Juni</option>
+        <option value="7">Juli</option>
+        <option value="8">Agustus</option>
+        <option value="9">September</option>
+        <option value="10">Oktober</option>
+        <option value="11">November</option>
+        <option value="12">Desember</option>
+      </select>
+      
+      <label for="tahun">Masukkan Tahun (4 digit):</label>
+      <input type="number" id="tahun" placeholder="Contoh: 1990" min="1900" max="9999">
+    </div>
+    <button onclick="calculateAge()">Hitung Umur</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateAge() {
+      const tanggal = parseInt(document.getElementById("tanggal").value);
+      const bulan = parseInt(document.getElementById("bulan").value) - 1; // Bulan dimulai dari 0
+      const tahun = parseInt(document.getElementById("tahun").value);
+
+      // Validasi input
+      if (isNaN(tanggal) || tanggal < 1 || tanggal > 31) {
+        document.getElementById("result").textContent = "Masukkan tanggal yang valid (1-31).";
+        return;
+      }
+
+      if (isNaN(bulan) || bulan < 0 || bulan > 11) {
+        document.getElementById("result").textContent = "Pilih bulan yang valid.";
+        return;
+      }
+
+      if (isNaN(tahun) || tahun < 1900 || tahun > new Date().getFullYear()) {
+        document.getElementById("result").textContent = "Masukkan tahun yang valid (1900-sekarang).";
+        return;
+      }
+
+      const birthdate = new Date(tahun, bulan, tanggal);
+      const today = new Date();
+
+      let ageYears = today.getFullYear() - birthdate.getFullYear();
+      let ageMonths = today.getMonth() - birthdate.getMonth();
+      let ageDays = today.getDate() - birthdate.getDate();
+
+      if (ageDays < 0) {
+        ageMonths -= 1;
+        ageDays += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+      if (ageMonths < 0) {
+        ageYears -= 1;
+        ageMonths += 12;
+      }
+
+      document.getElementById("result").textContent =
+        `Umur Anda: ${ageYears} tahun, ${ageMonths} bulan, dan ${ageDays} hari.`;
+    }
+  </script>
+</body>
+</html>
