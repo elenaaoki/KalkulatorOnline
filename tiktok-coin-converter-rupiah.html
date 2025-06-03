@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konversi Koin TikTok</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f0f23;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(255, 0, 150, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 100, 0, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .app-container {
+      background: rgba(20, 20, 35, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 440px;
+      width: 100%;
+      backdrop-filter: blur(20px);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .app-title {
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff0080, #ff8c00, #00d4ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .app-subtitle {
+      color: #a0a0b8;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .calculator-section {
+      margin-bottom: 24px;
+    }
+
+    .input-container {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .input-label {
+      display: block;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .coin-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px 50px 16px 16px;
+      font-size: 18px;
+      font-weight: 500;
+      color: #ffffff;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+    }
+
+    .coin-input::placeholder {
+      color: #6b7280;
+    }
+
+    .coin-input:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .coin-input:focus {
+      border-color: #ff0080;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 0 2px rgba(255, 0, 128, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .coin-emoji {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 22px;
+      pointer-events: none;
+    }
+
+    .calculate-button {
+      width: 100%;
+      background: linear-gradient(135deg, #ff0080, #ff4081);
+      border: none;
+      border-radius: 12px;
+      padding: 18px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calculate-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 0, 128, 0.4);
+    }
+
+    .calculate-button:active {
+      transform: translateY(0);
+    }
+
+    .calculate-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .calculate-button:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .results-panel {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 24px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .results-panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .result-row:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 18px;
+      padding-top: 16px;
+      margin-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .result-row:last-child .result-value {
+      color: #ff4081;
+      font-size: 20px;
+    }
+
+    .result-label {
+      color: #a0a0b8;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .result-value {
+      color: #ffffff;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .coin-count {
+      color: #00d4ff;
+    }
+
+    .error-alert {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 16px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .rate-info {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .rate-info .rate-label {
+      color: #7dd3fc;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .rate-info .rate-value {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      .app-container {
+        padding: 24px;
+        margin: 10px;
+      }
+      
+      .app-title {
+        font-size: 24px;
+      }
+      
+      .coin-input {
+        font-size: 16px;
+        padding: 14px 45px 14px 14px;
+      }
+      
+      .calculate-button {
+        font-size: 14px;
+        padding: 16px;
+      }
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Hapus semua outline dan focus ring default */
+    button, input {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus, input:focus {
+      outline: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <h1 class="app-title">TikTok Coin Calculator</h1>
+      <p class="app-subtitle">Hitung nilai pembelian koin TikTok dalam Rupiah (termasuk informasi pajak)</p>
+    </header>
+
+    <main class="calculator-section">
+      <div class="input-container">
+        <label class="input-label" for="coinAmount">Jumlah Koin TikTok</label>
+        <div style="position: relative;">
+          <input 
+            type="number" 
+            id="coinAmount" 
+            class="coin-input"
+            placeholder="Masukkan jumlah koin..."
+            min="1"
+            step="1"
+          />
+          <span class="coin-emoji">🥮</span>
+        </div>
+      </div>
+
+      <button class="calculate-button" onclick="calculatePrice()">
+        <span id="buttonText">Hitung Harga</span>
+        <span id="buttonSpinner" class="loading-spinner" style="display: none;"></span>
+      </button>
+    </main>
+
+    <div class="results-panel" id="resultsPanel">
+      <!-- Hasil kalkulasi akan ditampilkan di sini -->
+    </div>
+  </div>
+
+  <script>
+    const COIN_PACKAGES = [
+      { coin: 5, price: 1200 },
+      { coin: 70, price: 17000 },
+      { coin: 350, price: 87000 },
+      { coin: 700, price: 174000 },
+      { coin: 1400, price: 348000 },
+      { coin: 3500, price: 871000 },
+      { coin: 7000, price: 1742000 },
+      { coin: 17500, price: 4350000 }
+    ];
+    
+    const TAX_RATE = 0.11;
+
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+      }).format(amount);
+    }
+
+    function formatNumber(number) {
+      return new Intl.NumberFormat('id-ID').format(number);
+    }
+
+    function showLoading() {
+      document.getElementById('buttonText').style.display = 'none';
+      document.getElementById('buttonSpinner').style.display = 'inline-block';
+    }
+
+    function hideLoading() {
+      document.getElementById('buttonText').style.display = 'inline';
+      document.getElementById('buttonSpinner').style.display = 'none';
+    }
+
+    function calculatePrice() {
+      const coinInput = document.getElementById('coinAmount');
+      const coinAmount = parseInt(coinInput.value);
+      const resultsPanel = document.getElementById('resultsPanel');
+
+      if (isNaN(coinAmount) || coinAmount <= 0) {
+        resultsPanel.innerHTML = '<div class="error-alert">Mohon masukkan jumlah koin yang valid (minimal 1 koin)</div>';
+        resultsPanel.classList.add('visible');
+        return;
+      }
+
+      showLoading();
+
+      setTimeout(() => {
+        // Tentukan rate berdasarkan paket yang paling efisien
+        let ratePerCoin = COIN_PACKAGES[COIN_PACKAGES.length - 1].price / COIN_PACKAGES[COIN_PACKAGES.length - 1].coin;
+        
+        // Cari paket yang sesuai
+        for (let i = COIN_PACKAGES.length - 1; i >= 0; i--) {
+          if (coinAmount >= COIN_PACKAGES[i].coin) {
+            ratePerCoin = COIN_PACKAGES[i].price / COIN_PACKAGES[i].coin;
+            break;
+          }
+        }
+
+        const basePrice = Math.round(coinAmount * ratePerCoin);
+        const taxAmount = Math.round(basePrice * TAX_RATE);
+        const totalPrice = basePrice + taxAmount;
+
+        resultsPanel.innerHTML = `
+          <div class="result-row">
+            <span class="result-label">Jumlah Koin</span>
+            <span class="result-value coin-count">${formatNumber(coinAmount)} koin</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Harga Dasar</span>
+            <span class="result-value">${formatCurrency(basePrice)}</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">PPN (11%)</span>
+            <span class="result-value">${formatCurrency(taxAmount)}</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Total Pembayaran</span>
+            <span class="result-value">${formatCurrency(totalPrice)}</span>
+          </div>
+          <div class="rate-info">
+            <div class="rate-label">Rate Per Koin</div>
+            <div class="rate-value">${formatCurrency(Math.round(ratePerCoin))}</div>
+          </div>
+        `;
+
+        resultsPanel.classList.add('visible');
+        hideLoading();
+      }, 600);
+    }
+
+    // Event listeners
+    document.getElementById('coinAmount').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        calculatePrice();
+      }
+    });
+
+    document.getElementById('coinAmount').addEventListener('input', function() {
+      document.getElementById('resultsPanel').classList.remove('visible');
+    });
+  </script>
+</body>
+</html>
